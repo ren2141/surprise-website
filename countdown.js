@@ -1,4 +1,4 @@
-const releaseDate = new Date("2026-07-27T23:58:00+05:30");
+const releaseDate = new Date("2026-07-27T17:00:00+05:30");
 
 function updateCountdown(){
 

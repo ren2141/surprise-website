@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>A Surprise For You</title>
+  <meta name="description" content="A little digital gift, made just for you." />
+  <meta name="theme-color" content="#7C93E0" />
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+
+  <!-- Fonts: Fraunces (display), Manrope (body), Caveat (handwritten letter) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="gate-locked">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Scroll progress "ribbon" — doubles as the site's signature thread -->
+  <div class="progress-ribbon" aria-hidden="true"><span id="progressFill"></span></div>
+
+  <!-- Ambient glowing particles, drift behind every section -->
+  <div class="particle-field" id="particleField" aria-hidden="true"></div>
+
+  <!-- Fullscreen canvas used only for the confetti / fireworks / hearts burst -->
+  <canvas id="effectsCanvas" class="effects-canvas" aria-hidden="true"></canvas>
+
+  <!-- Envelope-opening moment, played once when "Open My Surprise" is tapped -->
+  <div class="envelope-overlay" id="envelopeOverlay" aria-hidden="true">
+    <div class="envelope-scene">
+      <div class="envelope">
+        <div class="envelope-body">
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <rect class="envelope-body-shape" x="4" y="4" width="192" height="132" rx="12" />
+            <path class="envelope-body-fold" d="M8,130 L100,74 L192,130" />
+          </svg>
+        </div>
+        <div class="envelope-flap">
+          <svg viewBox="0 0 200 140" width="100%" height="100%">
+            <path class="envelope-flap-shape" d="M4,4 L196,4 L100,74 Z" />
+            <circle class="envelope-seal" cx="100" cy="74" r="15" />
+            <path class="envelope-seal-heart" transform="translate(89,63) scale(0.35)" d="M32 56S6 40.5 6 22.5C6 12.9 13.6 6 22 6c5 0 8.7 2.4 10 6 1.3-3.6 5-6 10-6 8.4 0 16 6.9 16 16.5C58 40.5 32 56 32 56Z" />
+          </svg>
+        </div>
+        <div class="envelope-heart">
+          <svg viewBox="0 0 64 64"><path d="M32 56S6 40.5 6 22.5C6 12.9 13.6 6 22 6c5 0 8.7 2.4 10 6 1.3-3.6 5-6 10-6 8.4 0 16 6.9 16 16.5C58 40.5 32 56 32 56Z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating section dots, desktop/tablet only -->
+  <nav class="side-nav" id="sideNav" aria-label="Jump to section"></nav>
+
+  <!-- Floating action buttons -->
+  <div class="floating-controls">
+    <button id="musicToggle" class="control-btn music-btn is-hidden" type="button" tabindex="-1" aria-label="Play background music" aria-pressed="false">
+      <svg class="icon icon-note" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="18" r="3"/><circle cx="18" cy="15" r="3"/><path d="M11 18V5.5l10-2V13"/></svg>
+      <svg class="icon icon-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    </button>
+    <button id="backToTop" class="control-btn top-btn is-hidden" type="button" tabindex="-1" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+    </button>
+  </div>
+
+  <main id="main">
+
+    <!-- ================= LANDING ================= -->
+    <section id="landing" class="section landing">
+      <div class="landing-hearts" id="landingHearts" aria-hidden="true"></div>
+      <div class="landing-glow" aria-hidden="true"></div>
+      <div class="landing-inner">
+        <p class="eyebrow" id="landingEyebrow"></p>
+        <h1 class="landing-heading" id="landingHeading"></h1>
+        <p class="landing-sub" id="landingSub"></p>
+        <button id="openSurpriseBtn" class="btn btn-primary btn-open" type="button">
+          <span id="openSurpriseLabel"></span>
+        </button>
+      </div>
+      <div class="scroll-hint" aria-hidden="true"><span></span></div>
+    </section>
+
+    <!-- ================= TIMELINE ================= -->
+    <section id="timeline" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="timelineHeading"></h2>
+          <p id="timelineSub" class="section-sub"></p>
+        </div>
+        <div class="timeline-rail" id="timelineRail"></div>
+      </div>
+    </section>
+
+    <!-- ================= QUIZ (video + question, gates the rest of the page) ================= -->
+    <section id="quiz" class="section">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <h2 id="quizHeading"></h2>
+          <p id="quizSub" class="section-sub"></p>
+        </div>
+        <div class="quiz-video-wrap" id="quizVideoWrap"></div>
+        <div class="quiz-box glass-card">
+          <p class="quiz-question" id="quizQuestion"></p>
+          <form class="quiz-answer-form" id="quizAnswerForm">
+            <input type="text" class="quiz-input" id="quizAnswerInput" aria-label="Your answer" autocomplete="off" required />
+            <button class="btn btn-primary quiz-submit" id="quizSubmitBtn" type="submit"></button>
+          </form>
+          <div class="quiz-feedback" id="quizFeedback" aria-live="polite" hidden>
+            <p class="quiz-message" id="quizMessage" hidden></p>
+            <button class="btn btn-primary quiz-continue" id="quizContinueBtn" type="button"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Everything below stays hidden (and out of the scrollable page) until
+         the question above is answered — see #afterQuiz in style.css/script.js -->
+    <div id="afterQuiz" class="locked">
+
+    <!-- ================= GALLERY ================= -->
+    <section id="gallery" class="section alt-bg">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="galleryHeading"></h2>
+          <p id="gallerySub" class="section-sub"></p>
+        </div>
+        <div class="masonry" id="masonryGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= WISHES ================= -->
+    <section id="wishes" class="section">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <h2 id="wishesHeading"></h2>
+        </div>
+        <div class="wishes-list" id="wishesList"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIDEO ================= -->
+    <section id="video" class="section alt-bg">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <h2 id="videoHeading"></h2>
+          <p id="videoSub" class="section-sub"></p>
+        </div>
+        <div class="video-grid" id="videoGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= FUN FACTS ================= -->
+    <section id="funfacts" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="factsHeading"></h2>
+        </div>
+        <div class="facts-grid" id="factsGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= MEMORY WALL ================= -->
+    <section id="wall" class="section alt-bg">
+      <div class="container">
+        <div class="section-head">
+          <h2 id="wallHeading"></h2>
+          <p id="wallSub" class="section-sub"></p>
+        </div>
+        <div class="wall-collage" id="wallCollage"></div>
+      </div>
+    </section>
+
+    <!-- ================= COUNTDOWN (optional) ================= -->
+    <section id="countdown" class="section">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <h2 id="countdownHeading"></h2>
+          <p id="countdownLabel" class="section-sub"></p>
+        </div>
+        <div class="countdown-grid" id="countdownGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= CELEBRATION (confetti trigger) ================= -->
+    <section id="celebrate" class="section celebrate alt-bg">
+      <h2 id="celebrateHeading"></h2>
+      <p id="celebrateSub" class="section-sub"></p>
+    </section>
+
+    <!-- ================= FINAL LETTER ================= -->
+    <section id="letter" class="section">
+      <div class="container container-narrow">
+        <div class="section-head">
+          <h2 id="letterHeading"></h2>
+        </div>
+        <div class="letter-card">
+          <div class="letter-body" id="letterBody"></div>
+          <p class="letter-signature" id="letterSignature"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= FINAL SCREEN ================= -->
+    <section id="final" class="section final">
+      <div class="glow-heart" aria-hidden="true">
+        <svg viewBox="0 0 64 64"><path d="M32 56S6 40.5 6 22.5C6 12.9 13.6 6 22 6c5 0 8.7 2.4 10 6 1.3-3.6 5-6 10-6 8.4 0 16 6.9 16 16.5C58 40.5 32 56 32 56Z"/></svg>
+      </div>
+      <h2 id="finalHeading"></h2>
+      <p id="finalSub"></p>
+      <p class="footer-note" id="footerNote"></p>
+    </section>
+
+    </div><!-- /#afterQuiz -->
+
+  </main>
+
+  <!-- ================= LIGHTBOX ================= -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer" hidden>
+    <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close photo viewer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" type="button" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <figure class="lightbox-figure">
+      <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+      <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
+    </figure>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" type="button" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+
+  <audio id="bgMusic" loop preload="none"></audio>
+
+  <script src="js/config.js"></script>
+  <script src="js/script.js" defer></script>
+</body>
+</html>
